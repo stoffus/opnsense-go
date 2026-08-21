@@ -24,6 +24,7 @@ func TestSubnetV4(t *testing.T) {
 
 	subnet := &SubnetV4{
 		Subnet:                "192.168.200.0/24",
+		ValidLifetime:         "86400",
 		NextServer:            "",
 		Pools:                 "192.168.200.100 - 192.168.200.200",
 		MatchClientId:         "1",
@@ -54,6 +55,9 @@ func TestSubnetV4(t *testing.T) {
 	if retrieved.Subnet != subnet.Subnet {
 		t.Errorf("Subnet mismatch: got %s, want %s", retrieved.Subnet, subnet.Subnet)
 	}
+	if retrieved.ValidLifetime != subnet.ValidLifetime {
+		t.Errorf("ValidLifetime mismatch: got %s, want %s", retrieved.ValidLifetime, subnet.ValidLifetime)
+	}
 	if retrieved.Pools != subnet.Pools {
 		t.Errorf("Pools mismatch: got %s, want %s", retrieved.Pools, subnet.Pools)
 	}
@@ -72,6 +76,7 @@ func TestSubnetV4(t *testing.T) {
 
 	subnet.Description = "Test Kea DHCPv4 Subnet Updated"
 	subnet.Pools = "192.168.200.100 - 192.168.200.150"
+	subnet.ValidLifetime = "43200"
 	err = controller.UpdateSubnetV4(ctx, key, subnet)
 	if err != nil {
 		t.Fatalf("Failed to update SubnetV4: %v", err)
@@ -87,6 +92,9 @@ func TestSubnetV4(t *testing.T) {
 	}
 	if retrieved.Pools != "192.168.200.100 - 192.168.200.150" {
 		t.Errorf("Updated pools mismatch: got %s, want %s", retrieved.Pools, "192.168.200.100 - 192.168.200.150")
+	}
+	if retrieved.ValidLifetime != "43200" {
+		t.Errorf("Updated valid lifetime mismatch: got %s, want %s", retrieved.ValidLifetime, "43200")
 	}
 
 	err = controller.DeleteSubnetV4(ctx, key)
